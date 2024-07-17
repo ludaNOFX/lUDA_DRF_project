@@ -1,0 +1,31 @@
+version: "3"
+services:
+
+  postgres:
+    image: postgres:14.3
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - $HOME/docker/volumes/postgres/luda_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: LUDA_DRF_API
+      POSTGRES_PASSWORD: egoza1999egoza
+      POSTGRES_DB: LUDA_DRF_API
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: app
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://LUDA_DRF_API:egoza1999egoza@postgres/LUDA_DRF_API
+      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    volumes:
+      - .:/home/LUDA_DRF_API
